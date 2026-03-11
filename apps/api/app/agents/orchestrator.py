@@ -2,6 +2,7 @@ from app.agents.classifier import intent_classifier
 from app.agents.composer import response_composer
 from app.agents.router import decision_router
 from app.schemas.chat import AgentDecision, ChatRequest, ChatResponse, IntentType, SourceItem, ToolCallItem, TraceItem
+from app.services.llm_service import llm_service
 from app.tools.calculator import calculator_tool
 from app.tools.document_lookup import document_lookup_tool
 from app.utils.ids import generate_message_id
@@ -45,6 +46,10 @@ class AgentOrchestrator:
             trace.append(TraceItem(step="tool_executed: calculator_tool"))
 
         answer = self._build_answer(intent=intent, request=request, sources=sources, tool_calls=tool_calls)
+        if intent == IntentType.DIRECT_ANSWER:
+            llm_result = llm_service.generate_direct_answer(request.message)
+            answer = llm_result.answer
+            trace.append(TraceItem(step=llm_result.trace_step))
         trace.append(TraceItem(step="final_response_generated"))
 
         return response_composer.compose(
