@@ -40,10 +40,10 @@ class AgentOrchestrator:
                 ToolCallItem(
                     tool_name=calculator_tool.name,
                     tool_input={"expression": request.message},
-                    tool_output={"result": tool_result["result"]},
+                    tool_output=tool_result,
                 )
             )
-            trace.append(TraceItem(step="tool_executed: calculator_tool"))
+            trace.append(TraceItem(step=f"tool_executed: calculator_tool ({tool_result['status']})"))
 
         answer = self._build_answer(intent=intent, request=request, sources=sources, tool_calls=tool_calls)
         if intent == IntentType.DIRECT_ANSWER:
@@ -75,8 +75,9 @@ class AgentOrchestrator:
             return f"这是基于知识库的 mock 回答。你问的是：{request.message}。命中的关键信息：{source_summary}"
 
         if intent == IntentType.TOOL_CALL and tool_calls:
-            result = tool_calls[0].tool_output["result"]
-            return f"这是工具调用路径的 mock 回答。任务：{request.message}。calculator_tool 返回结果：{result}"
+            result = tool_calls[0].tool_output.get("formatted_result", tool_calls[0].tool_output.get("result"))
+            explanation = tool_calls[0].tool_output.get("explanation", "")
+            return f"这是工具调用路径的 mock 回答。任务：{request.message}。calculator_tool 返回结果：{result}。{explanation}"
 
         return f"这是 direct_answer 路径的 mock 回答。任务：{request.message}"
 

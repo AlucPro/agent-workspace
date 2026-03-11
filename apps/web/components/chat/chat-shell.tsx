@@ -86,10 +86,36 @@ function ToolCallsPanel({ toolCalls }: { toolCalls: ToolCallItem[] }) {
         ) : (
           toolCalls.map((toolCall, index) => (
             <article key={`${toolCall.tool_name}_${index}`} className="rounded-2xl border border-line bg-white/70 p-4">
-              <div className="text-sm font-semibold text-ink">{toolCall.tool_name}</div>
-              <pre className="mt-3 overflow-x-auto rounded-xl bg-ink p-3 text-xs text-paper">
-                {JSON.stringify(toolCall, null, 2)}
-              </pre>
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-sm font-semibold text-ink">{toolCall.tool_name}</div>
+                <span className="rounded-full bg-accentSoft px-3 py-1 text-xs font-medium text-ink">
+                  {String(toolCall.tool_output.status ?? "done")}
+                </span>
+              </div>
+
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div className="rounded-2xl border border-line bg-panel/70 p-3">
+                  <div className="text-[11px] uppercase tracking-[0.22em] text-muted">Input</div>
+                  <p className="mt-2 text-sm leading-6 text-ink">
+                    {String(toolCall.tool_input.expression ?? JSON.stringify(toolCall.tool_input))}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-line bg-panel/70 p-3">
+                  <div className="text-[11px] uppercase tracking-[0.22em] text-muted">Result</div>
+                  <p className="mt-2 text-lg font-semibold text-ink">
+                    {String(toolCall.tool_output.formatted_result ?? toolCall.tool_output.result ?? "-")}
+                  </p>
+                </div>
+              </div>
+
+              <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+                {Object.entries(toolCall.tool_output).map(([key, value]) => (
+                  <div key={key} className="rounded-2xl border border-line bg-white p-3">
+                    <dt className="text-[11px] uppercase tracking-[0.22em] text-muted">{key}</dt>
+                    <dd className="mt-2 break-words text-sm leading-6 text-ink">{String(value)}</dd>
+                  </div>
+                ))}
+              </dl>
             </article>
           ))
         )}
