@@ -15,6 +15,7 @@ const DEFAULT_PROMPTS = [
 export function useChat() {
   const [sessionId] = useState(() => `session_${Date.now()}`);
   const [useKnowledgeBase, setUseKnowledgeBase] = useState(true);
+  const [requestError, setRequestError] = useState<string | null>(null);
   const [messages, setMessages] = useState<UiMessage[]>([
     {
       id: "assistant_welcome",
@@ -42,6 +43,7 @@ export function useChat() {
         use_knowledge_base: useKnowledgeBase,
       }),
     onMutate: (message) => {
+      setRequestError(null);
       setMessages((current) => [
         ...current,
         {
@@ -62,6 +64,9 @@ export function useChat() {
         },
       ]);
     },
+    onError: (error) => {
+      setRequestError(error instanceof Error ? error.message : "Chat request failed");
+    },
   });
 
   return {
@@ -71,6 +76,6 @@ export function useChat() {
     sendMessage: mutation.mutate,
     setUseKnowledgeBase,
     useKnowledgeBase,
-    error: mutation.error instanceof Error ? mutation.error.message : null,
+    error: requestError,
   };
 }

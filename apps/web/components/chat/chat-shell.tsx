@@ -191,6 +191,12 @@ export function ChatShell() {
             </span>
           </div>
 
+          {error ? (
+            <div className="mt-4 rounded-[20px] border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+              请求失败：{error}
+            </div>
+          ) : null}
+
           <div className="mt-6 space-y-4">
             {messages.map((message) => (
               <MessageCard key={message.id} message={message} />
@@ -216,7 +222,7 @@ export function ChatShell() {
             />
             <div className="mt-4 flex items-center justify-between gap-4">
               <p className="text-sm text-muted">
-                {error ? `请求失败，已回退 mock：${error}` : "默认请求 http://localhost:8000/api/chat"}
+                默认请求 {`${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"}/api/chat`}
               </p>
               <button
                 type="submit"
