@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "SF Pro Display", "Avenir Next", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(211, 99, 43, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(109, 101, 93, 0.14), transparent 22%),
+    #f4efe8;
+}
+
+body {
+  min-height: 100vh;
+  color: #161616;
+  background-image:
+    linear-gradient(rgba(214, 202, 187, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 202, 187, 0.24) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(211, 99, 43, 0.24);
+}

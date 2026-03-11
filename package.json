@@ -1,0 +1,12 @@
+{
+  "name": "agent-workspace",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace @agent-workspace/web",
+    "build:web": "npm run build --workspace @agent-workspace/web",
+    "lint:web": "npm run lint --workspace @agent-workspace/web"
+  }
+}
