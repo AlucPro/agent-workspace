@@ -1,4 +1,11 @@
 export type IntentType = "direct_answer" | "knowledge_qa" | "tool_call";
+export type MessageRole = "user" | "assistant";
+
+export interface ChatRequest {
+  session_id: string;
+  message: string;
+  use_knowledge_base: boolean;
+}
 
 export interface SourceItem {
   document_id: string;
@@ -29,7 +36,7 @@ export interface ChatResponse {
 
 export interface UiMessage {
   id: string;
-  role: "user" | "assistant";
+  role: MessageRole;
   content: string;
   response?: ChatResponse;
 }

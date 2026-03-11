@@ -1,4 +1,4 @@
-from app.schemas.chat import ChatResponse, SourceItem, ToolCallItem, TraceItem
+from app.schemas.chat import ChatResponse, IntentType, SourceItem, ToolCallItem, TraceItem
 
 
 class ResponseComposer:
@@ -7,7 +7,7 @@ class ResponseComposer:
         *,
         session_id: str,
         message_id: str,
-        intent: str,
+        intent: IntentType,
         answer: str,
         sources: list[SourceItem],
         tool_calls: list[ToolCallItem],

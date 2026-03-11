@@ -1,7 +1,7 @@
 from app.agents.classifier import intent_classifier
 from app.agents.composer import response_composer
 from app.agents.router import decision_router
-from app.schemas.chat import AgentDecision, ChatRequest, ChatResponse, SourceItem, ToolCallItem, TraceItem
+from app.schemas.chat import AgentDecision, ChatRequest, ChatResponse, IntentType, SourceItem, ToolCallItem, TraceItem
 from app.tools.calculator import calculator_tool
 from app.tools.document_lookup import document_lookup_tool
 from app.utils.ids import generate_message_id
@@ -9,7 +9,8 @@ from app.utils.ids import generate_message_id
 
 class AgentOrchestrator:
     def handle(self, request: ChatRequest) -> ChatResponse:
-        intent = intent_classifier.classify(request)
+        classification = intent_classifier.classify_with_reason(request)
+        intent = classification.intent
         route = decision_router.route(request, intent)
         trace = [
             TraceItem(step=f"intent_detected: {intent}"),
@@ -19,7 +20,7 @@ class AgentOrchestrator:
 
         decision = AgentDecision(
             intent=intent,
-            reasoning_summary=self._reasoning_summary(intent),
+            reasoning_summary=classification.reason,
             retrieval_needed=route["retrieval_needed"],
             tool_plan=[],
         )
@@ -57,27 +58,18 @@ class AgentOrchestrator:
         )
 
     @staticmethod
-    def _reasoning_summary(intent: str) -> str:
-        summaries = {
-            "direct_answer": "用户请求适合直接生成回答。",
-            "knowledge_qa": "用户请求依赖知识库内容，需要先检索文档。",
-            "tool_call": "用户请求包含计算类任务，需要调用工具。",
-        }
-        return summaries[intent]
-
-    @staticmethod
     def _build_answer(
         *,
-        intent: str,
+        intent: IntentType,
         request: ChatRequest,
         sources: list[SourceItem],
         tool_calls: list[ToolCallItem],
     ) -> str:
-        if intent == "knowledge_qa":
+        if intent == IntentType.KNOWLEDGE_QA:
             source_summary = "；".join(source.content for source in sources[:2]) or "当前知识库暂无匹配内容。"
             return f"这是基于知识库的 mock 回答。你问的是：{request.message}。命中的关键信息：{source_summary}"
 
-        if intent == "tool_call" and tool_calls:
+        if intent == IntentType.TOOL_CALL and tool_calls:
             result = tool_calls[0].tool_output["result"]
             return f"这是工具调用路径的 mock 回答。任务：{request.message}。calculator_tool 返回结果：{result}"
 

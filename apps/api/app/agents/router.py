@@ -1,11 +1,11 @@
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, IntentType
 
 
 class DecisionRouter:
-    def route(self, request: ChatRequest, intent: str) -> dict[str, bool]:
+    def route(self, request: ChatRequest, intent: IntentType) -> dict[str, bool]:
         return {
-            "retrieval_needed": intent == "knowledge_qa" or request.use_knowledge_base,
-            "tool_needed": intent == "tool_call",
+            "retrieval_needed": intent == IntentType.KNOWLEDGE_QA or request.use_knowledge_base,
+            "tool_needed": intent == IntentType.TOOL_CALL,
         }
 
 

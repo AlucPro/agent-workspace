@@ -1,10 +1,4 @@
-import type { ChatResponse, IntentType, SourceItem, ToolCallItem, TraceItem } from "@/types/chat";
-
-export interface ChatRequest {
-  session_id: string;
-  message: string;
-  use_knowledge_base: boolean;
-}
+import type { ChatRequest, ChatResponse, IntentType, SourceItem, ToolCallItem, TraceItem } from "@/types/chat";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const ENABLE_MOCK_FALLBACK = process.env.NEXT_PUBLIC_ENABLE_CHAT_MOCK === "true";
@@ -68,6 +62,21 @@ function isChatResponse(value: unknown): value is ChatResponse {
   );
 }
 
+function validateChatRequest(request: ChatRequest): void {
+  if (!request.session_id || request.session_id.length > 100) {
+    throw new Error("Invalid session_id");
+  }
+
+  const message = request.message.trim();
+  if (!message) {
+    throw new Error("Message cannot be empty");
+  }
+
+  if (message.length > 4000) {
+    throw new Error("Message exceeds 4000 characters");
+  }
+}
+
 function mockResponse(request: ChatRequest): ChatResponse {
   return {
     session_id: request.session_id,
@@ -96,6 +105,8 @@ function mockResponse(request: ChatRequest): ChatResponse {
 }
 
 export async function sendChatMessage(request: ChatRequest): Promise<ChatResponse> {
+  validateChatRequest(request);
+
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 15_000);
 
