@@ -5,6 +5,7 @@
     "apps/*"
   ],
   "scripts": {
+    "dev:api": "cd apps/api && ./.venv/bin/uvicorn app.main:app --reload --port 8000",
     "dev:web": "npm run dev --workspace @agent-workspace/web",
     "build:web": "npm run build --workspace @agent-workspace/web",
     "lint:web": "npm run lint --workspace @agent-workspace/web"

@@ -13,6 +13,10 @@ export interface ToolCallItem {
   tool_output: Record<string, string | number | boolean>;
 }
 
+export interface TraceItem {
+  step: string;
+}
+
 export interface ChatResponse {
   session_id: string;
   message_id: string;
@@ -20,7 +24,7 @@ export interface ChatResponse {
   answer: string;
   sources: SourceItem[];
   tool_calls: ToolCallItem[];
-  trace: string[];
+  trace: TraceItem[];
 }
 
 export interface UiMessage {

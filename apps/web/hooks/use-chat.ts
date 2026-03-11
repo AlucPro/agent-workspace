@@ -29,7 +29,7 @@ export function useChat() {
           "欢迎来到 Agent Workspace v1。当前界面已完成前端初始化，支持聊天、trace、sources 和 tool calls 的展示骨架。",
         sources: [],
         tool_calls: [],
-        trace: ["ui_bootstrapped", "ready_for_api_integration"],
+        trace: [{ step: "ui_bootstrapped" }, { step: "ready_for_api_integration" }],
       },
     },
   ]);

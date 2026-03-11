@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 import { useChat } from "@/hooks/use-chat";
-import type { SourceItem, ToolCallItem, UiMessage } from "@/types/chat";
+import type { SourceItem, ToolCallItem, TraceItem, UiMessage } from "@/types/chat";
 
 function PanelTitle({
   eyebrow,
@@ -98,7 +98,7 @@ function ToolCallsPanel({ toolCalls }: { toolCalls: ToolCallItem[] }) {
   );
 }
 
-function TracePanel({ trace }: { trace: string[] }) {
+function TracePanel({ trace }: { trace: TraceItem[] }) {
   return (
     <section className="rounded-[24px] border border-line bg-panel p-5 shadow-panel">
       <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-muted">Trace</h3>
@@ -107,11 +107,11 @@ function TracePanel({ trace }: { trace: string[] }) {
           <li className="text-sm text-muted">当前消息没有 trace 记录。</li>
         ) : (
           trace.map((item, index) => (
-            <li key={`${item}_${index}`} className="flex gap-3 text-sm leading-6 text-ink">
+            <li key={`${item.step}_${index}`} className="flex gap-3 text-sm leading-6 text-ink">
               <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-paper">
                 {index + 1}
               </span>
-              <span>{item}</span>
+              <span>{item.step}</span>
             </li>
           ))
         )}

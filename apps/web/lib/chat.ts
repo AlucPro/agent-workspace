@@ -25,9 +25,9 @@ const mockResponse = (request: ChatRequest): ChatResponse => ({
     : [],
   tool_calls: [],
   trace: [
-    `input_received: ${request.message.slice(0, 48)}`,
-    `intent_detected: ${request.use_knowledge_base ? "knowledge_qa" : "direct_answer"}`,
-    "mock_response_generated",
+    { step: `input_received: ${request.message.slice(0, 48)}` },
+    { step: `intent_detected: ${request.use_knowledge_base ? "knowledge_qa" : "direct_answer"}` },
+    { step: "mock_response_generated" },
   ],
 });
 
